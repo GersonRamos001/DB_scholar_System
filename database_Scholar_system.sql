@@ -1,0 +1,168 @@
+﻿create DATABASE SistemaEscolar1;
+
+use SistemaEscolar1;
+
+CREATE TABLE Estudiante (
+    id_estudiante INT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    apellido_paterno VARCHAR(50) NOT NULL,
+    apellido_materno VARCHAR(50) NOT NULL,
+    fecha_nacimiento DATE NOT NULL,
+    sexo char(1) NOT NULL,  --CONSTRAIN MISSING ONLY 'M' O 'F'
+    nacionalidad VARCHAR(50),
+    ciudad_origen VARCHAR(50),
+    codigo_postal VARCHAR(10),
+    email VARCHAR(100),
+    telefono VARCHAR(20),
+   -- celular VARCHAR(20),
+    direccion VARCHAR(200),
+    id_nivel_educativo INT
+	--ADD EMAIL SCHOLAR
+);
+
+
+
+
+CREATE TABLE NivelEducativo (
+    id_nivel_educativo INT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL
+);
+
+-- Modificar la tabla Estudiante para hacer referencia a NivelEducativo
+ALTER TABLE Estudiante
+ADD FOREIGN KEY (id_nivel_educativo) REFERENCES NivelEducativo(id_nivel_educativo);
+
+CREATE TABLE Profesor (
+    id_profesor INT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    apellido_paterno VARCHAR(50) NOT NULL,
+    apellido_materno VARCHAR(50) NOT NULL,
+    fecha_nacimiento DATE NOT NULL,
+    email VARCHAR(100),  
+    telefono VARCHAR(20),
+    --celular VARCHAR(20),
+    direccion VARCHAR(200),
+    especialidad VARCHAR(100) NOT NULL,
+    fecha_ingreso DATE NOT NULL,
+    salario DECIMAL(10, 2) NOT NULL,
+    activo TINYINT NOT NULL DEFAULT 1
+);
+
+
+CREATE TABLE Asignatura (
+    id_asignatura INT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    creditos INT NOT NULL
+);
+
+CREATE TABLE Grupo (
+    id_grupo INT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    capacidad INT NOT NULL,
+    id_asignatura INT NOT NULL,
+    id_profesor INT NOT NULL,
+    hora_inicio TIME NOT NULL,
+    hora_fin TIME NOT NULL,
+    ubicacion VARCHAR(200) NOT NULL,
+    FOREIGN KEY (id_asignatura) REFERENCES Asignatura(id_asignatura),
+    FOREIGN KEY (id_profesor) REFERENCES Profesor(id_profesor)
+);
+
+CREATE TABLE Estudiante_Grupo (
+    id_estudiante_grupo INT PRIMARY KEY,
+    id_estudiante INT NOT NULL,
+    id_grupo INT NOT NULL,
+    FOREIGN KEY (id_estudiante) REFERENCES Estudiante(id_estudiante),
+    FOREIGN KEY (id_grupo) REFERENCES Grupo(id_grupo)
+);
+
+CREATE TABLE Periodo (
+    id_periodo INT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    fecha_inicio DATE NOT NULL,
+    fecha_fin DATE NOT NULL
+);
+
+CREATE TABLE Tipo_Calificacion (
+    id_tipo_calificacion INT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Calificacion (
+    id_calificacion INT PRIMARY KEY,
+    id_estudiante_grupo INT NOT NULL,
+    id_asignatura INT NOT NULL,
+    id_periodo INT NOT NULL,
+    calificacion DECIMAL(5, 2) NOT NULL,
+    FOREIGN KEY (id_estudiante_grupo) REFERENCES Estudiante_Grupo(id_estudiante_grupo),
+    FOREIGN KEY (id_asignatura) REFERENCES Asignatura(id_asignatura),
+    FOREIGN KEY (id_periodo) REFERENCES Periodo(id_periodo)
+);
+
+ALTER TABLE Calificacion ADD tipo_calificacion INT NOT NULL DEFAULT 0;
+-- Agregamos la clave for�nea a la tabla Tipo_Calificacion
+ALTER TABLE Calificacion ADD FOREIGN KEY (tipo_calificacion) REFERENCES Tipo_Calificacion(id_tipo_calificacion);
+
+
+
+CREATE TABLE Evento (
+id_evento INT PRIMARY KEY,
+nombre VARCHAR(100) NOT NULL,
+fecha_inicio DATETIME NOT NULL,
+fecha_fin DATETIME NOT NULL
+);
+
+
+
+CREATE TABLE EventoGrupo (
+id_evento INT NOT NULL,
+id_grupo INT NOT NULL,
+PRIMARY KEY (id_evento, id_grupo),
+FOREIGN KEY (id_evento) REFERENCES Evento(id_evento),
+FOREIGN KEY (id_grupo) REFERENCES Grupo(id_grupo)
+);
+
+CREATE TABLE Editorial (
+    id_editorial INT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    direccion VARCHAR(200),
+    telefono VARCHAR(20),
+    email VARCHAR(100)
+);
+
+
+CREATE TABLE Biblioteca (
+    id_libro INT PRIMARY KEY,
+    titulo VARCHAR(100) NOT NULL,
+    autor VARCHAR(100) NOT NULL,
+    id_editorial INT,
+    descripcion TEXT,
+    fecha_publicacion DATE,
+    cantidad INT NOT NULL,
+    FOREIGN KEY (id_editorial) REFERENCES Editorial(id_editorial)
+);
+
+
+CREATE TABLE Estado (
+    id_estado INT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Prestamo (
+    id_prestamo INT PRIMARY KEY,
+    id_estudiante INT NOT NULL,
+    id_libro INT NOT NULL,
+    fecha_prestamo DATE NOT NULL,
+    fecha_devolucion DATE NOT NULL,
+    id_estado INT NOT NULL,
+    FOREIGN KEY (id_estudiante) REFERENCES Estudiante(id_estudiante),
+    FOREIGN KEY (id_libro) REFERENCES Biblioteca(id_libro),
+    FOREIGN KEY (id_estado) REFERENCES Estado(id_estado)
+);
+
+-- Agregar algunos datos de ejemplo
+INSERT INTO NivelEducativo (id_nivel_educativo, nombre) VALUES (1, 'Primaria');
+INSERT INTO NivelEducativo (id_nivel_educativo, nombre) VALUES (2, 'Secundaria');
+INSERT INTO NivelEducativo (id_nivel_educativo, nombre) VALUES (3, 'Bachiller');
+INSERT INTO NivelEducativo (id_nivel_educativo, nombre) VALUES (4, 'Universidad');
