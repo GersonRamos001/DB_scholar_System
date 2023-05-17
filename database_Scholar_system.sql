@@ -1,31 +1,46 @@
-﻿create DATABASE SistemaEscolar1;
+CREATE DATABASE SistemaEscolar1;
 
-use SistemaEscolar1;
+USE SistemaEscolar1;
+
+CREATE TABLE Usuario (
+    id_usuario INT PRIMARY KEY,
+    nombre_usuario VARCHAR(50) NOT NULL,
+    contrasena VARCHAR(50) NOT NULL,
+    fecha_creacion DATETIME NOT NULL DEFAULT GETDATE(),
+	fecha_modificacion DATETIME
+);
+
+CREATE TABLE Roles (
+    id_rol INT PRIMARY KEY,
+    nombre_rol VARCHAR(50) NOT NULL
+);
 
 CREATE TABLE Estudiante (
     id_estudiante INT PRIMARY KEY,
+    id_usuario INT NOT NULL,
     nombre VARCHAR(50) NOT NULL,
     apellido_paterno VARCHAR(50) NOT NULL,
     apellido_materno VARCHAR(50) NOT NULL,
     fecha_nacimiento DATE NOT NULL,
-    sexo char(1) NOT NULL,  --CONSTRAIN MISSING ONLY 'M' O 'F'
+    sexo CHAR(1) NOT NULL,
     nacionalidad VARCHAR(50),
     ciudad_origen VARCHAR(50),
     codigo_postal VARCHAR(10),
-    email VARCHAR(100), -- podriamos validar email con sp
+    email VARCHAR(100),
+	carnet char(8) unique,
     telefono VARCHAR(20),
-   -- celular VARCHAR(20),
+    celular VARCHAR(20),
     direccion VARCHAR(200),
     id_nivel_educativo INT,
-	--ADD EMAIL SCHOLAR
+	fecha_creacion DATETIME DEFAULT GETDATE(),
+	fecha_modificacion DATETIME DEFAULT GETDATE()
     CONSTRAINT enum_estudiante_sexo CHECK (sexo = 'M' OR sexo = 'F'),
-    -- CONSTRAINT chk_estudiante_telefono CHECK (telefono LIKE '[1-9][1-9][1-9][1-9]-[1-9][1-9][1-9][1-9]')
     CONSTRAINT chk_estudiante_celular CHECK (celular LIKE '[1-9][1-9][1-9][1-9]-[1-9][1-9][1-9][1-9]'),
-    CONSTRAINT chk_estudiante_codgio_postal CHECK (ISNUMERIC(codigo_postal) = 1),
-    CONSTRAINT chk_estudiante_fecha_nacimiento CHECK (YEAR(fecha_nacimiento) > YEAR(GETDATE()))
+    CONSTRAINT chk_estudiante_codigo_postal CHECK (ISNUMERIC(codigo_postal) = 1),
+    CONSTRAINT chk_estudiante_fecha_nacimiento CHECK (YEAR(fecha_nacimiento) > YEAR(GETDATE())),
+    CONSTRAINT chk_estudiante_edad CHECK (DATEDIFF(YEAR, fecha_nacimiento, GETDATE()) >= 0),
+    FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario)
 );
-
-
 
 
 CREATE TABLE NivelEducativo (
@@ -33,39 +48,69 @@ CREATE TABLE NivelEducativo (
     nombre VARCHAR(50) NOT NULL
 );
 
--- Modificar la tabla Estudiante para hacer referencia a NivelEducativo
+
 ALTER TABLE Estudiante
 ADD FOREIGN KEY (id_nivel_educativo) REFERENCES NivelEducativo(id_nivel_educativo);
 
--- rename a Docente (?)
+CREATE TABLE Facultad (
+    id_facultad INT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+);
+
+CREATE TABLE Carrera (
+    id_carrera INT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    id_facultad INT NOT NULL,
+    FOREIGN KEY (id_facultad) REFERENCES Facultad(id_facultad)
+);
+
+ALTER TABLE Estudiante
+ADD id_carrera INT,
+FOREIGN KEY (id_carrera) REFERENCES Carrera(id_carrera);
+
+
+CREATE TABLE Especializacion (
+    id_especializacion INT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL
+);
+
 CREATE TABLE Profesor (
     id_profesor INT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    id_facultad INT NOT NULL,
+    id_especializacion INT,
     nombre VARCHAR(50) NOT NULL,
     apellido_paterno VARCHAR(50) NOT NULL,
-    apellido_materno VARCHAR(50) NOT NULL,
+    apellido_materno VARCHAR(50),
     fecha_nacimiento DATE NOT NULL,
-    sexo char(1) NOT NULL,
-    email VARCHAR(100),  
+    sexo CHAR(1) NOT NULL,
+    email VARCHAR(100),
     telefono VARCHAR(20),
-    --celular VARCHAR(20),
+    celular VARCHAR(20),
     direccion VARCHAR(200),
-    especialidad VARCHAR(100) NOT NULL,
     fecha_ingreso DATE NOT NULL,
     salario DECIMAL(10, 2) NOT NULL,
     activo TINYINT NOT NULL DEFAULT 1,
+	fecha_creacion DATETIME DEFAULT GETDATE(),
+	fecha_modificacion DATETIME DEFAULT GETDATE()
     CONSTRAINT enum_profesor_sexo CHECK (sexo = 'M' OR sexo = 'F'),
-    -- CONSTRAINT chk_profesor_telefono CHECK (telefono LIKE '[1-9][1-9][1-9][1-9]-[1-9][1-9][1-9][1-9]')
     CONSTRAINT chk_profesor_celular CHECK (celular LIKE '[1-9][1-9][1-9][1-9]-[1-9][1-9][1-9][1-9]'),
-    CONSTRAINT chk_profesor_codgio_postal CHECK (ISNUMERIC(codigo_postal) = 1),
-    CONSTRAINT chk_profesor_fecha_nacimiento CHECK (YEAR(fecha_nacimiento) > YEAR(GETDATE()))
+    CONSTRAINT chk_profesor_fecha_nacimiento CHECK (DATEDIFF(YEAR, fecha_nacimiento, GETDATE()) >= 0),
+    FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario),
+    FOREIGN KEY (id_facultad) REFERENCES Facultad(id_facultad),
+    FOREIGN KEY (id_especializacion) REFERENCES Especializacion(id_especializacion)
 );
+
+
 
 
 CREATE TABLE Asignatura (
     id_asignatura INT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     descripcion TEXT,
-    creditos INT NOT NULL
+    creditos INT NOT NULL,
+    id_carrera INT NOT NULL,
+    FOREIGN KEY (id_carrera) REFERENCES Carrera(id_carrera)
 );
 
 CREATE TABLE Grupo (
@@ -116,7 +161,6 @@ CREATE TABLE Calificacion (
 );
 
 ALTER TABLE Calificacion ADD tipo_calificacion INT NOT NULL DEFAULT 0;
--- Agregamos la clave for�nea a la tabla Tipo_Calificacion
 ALTER TABLE Calificacion ADD FOREIGN KEY (tipo_calificacion) REFERENCES Tipo_Calificacion(id_tipo_calificacion);
 
 
@@ -139,47 +183,7 @@ FOREIGN KEY (id_evento) REFERENCES Evento(id_evento),
 FOREIGN KEY (id_grupo) REFERENCES Grupo(id_grupo)
 );
 
-CREATE TABLE Editorial (
-    id_editorial INT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    direccion VARCHAR(200),
-    telefono VARCHAR(20),
-    email VARCHAR(100),
-    CONSTRAINT chk_editorial_telefono CHECK (telefono LIKE '[1-9][1-9][1-9][1-9]-[1-9][1-9][1-9][1-9]')
-);
 
-
-CREATE TABLE Biblioteca (
-    id_libro INT PRIMARY KEY,
-    titulo VARCHAR(100) NOT NULL,
-    autor VARCHAR(100) NOT NULL,
-    id_editorial INT,
-    descripcion TEXT,
-    fecha_publicacion DATE,
-    cantidad INT NOT NULL,
-    FOREIGN KEY (id_editorial) REFERENCES Editorial(id_editorial)
-);
-
-
-CREATE TABLE Estado (
-    id_estado INT PRIMARY KEY,
-    nombre VARCHAR(50) NOT NULL
-);
-
-CREATE TABLE Prestamo (
-    id_prestamo INT PRIMARY KEY,
-    id_estudiante INT NOT NULL,
-    id_libro INT NOT NULL,
-    fecha_prestamo DATE NOT NULL,
-    fecha_devolucion DATE NOT NULL,
-    -- mora int not null -- Dias de mora del prestamo (?)
-    id_estado INT NOT NULL,
-    FOREIGN KEY (id_estudiante) REFERENCES Estudiante(id_estudiante),
-    FOREIGN KEY (id_libro) REFERENCES Biblioteca(id_libro),
-    FOREIGN KEY (id_estado) REFERENCES Estado(id_estado),
-    CONSTRAINT chk_prestamo_fecha_prestamo_fecha_devolucion CHECK (fecha_prestamo > fecha_devolucion)
-    -- CONSTAINT chk_prestamo_mora CHECK (mora >= 0)
-);
 
 -- Agregar algunos datos de ejemplo
 INSERT INTO NivelEducativo (id_nivel_educativo, nombre) VALUES (1, 'Primaria');
