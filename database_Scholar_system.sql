@@ -1,9 +1,9 @@
-CREATE DATABASE Nuevo;
+create DATABASE SistemaEscolar;
 
-USE  Nuevo;
+USE  SistemaEscolar;
 
 CREATE TABLE Usuario (
-    id_usuario INT PRIMARY KEY,
+    id_usuario INT PRIMARY KEY IDENTITY(1,1),
     nombre_usuario VARCHAR(50) NOT NULL,
     contrasena VARCHAR(50) NOT NULL,
     fecha_creacion DATETIME NOT NULL DEFAULT GETDATE(),
@@ -11,12 +11,12 @@ CREATE TABLE Usuario (
 );
 
 CREATE TABLE Roles (
-    id_rol INT PRIMARY KEY,
+    id_rol INT PRIMARY KEY IDENTITY(1,1),
     nombre_rol VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE Estudiante (
-    id_estudiante INT PRIMARY KEY,
+    id_estudiante INT PRIMARY KEY IDENTITY(1,1),
     id_usuario INT NOT NULL,
     nombre VARCHAR(50) NOT NULL,
     apellido_paterno VARCHAR(50) NOT NULL,
@@ -44,7 +44,7 @@ CREATE TABLE Estudiante (
 
 
 CREATE TABLE NivelEducativo (
-    id_nivel_educativo INT PRIMARY KEY,
+    id_nivel_educativo INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(50) NOT NULL
 );
 
@@ -53,12 +53,12 @@ ALTER TABLE Estudiante
 ADD FOREIGN KEY (id_nivel_educativo) REFERENCES NivelEducativo(id_nivel_educativo);
 
 CREATE TABLE Facultad (
-    id_facultad INT PRIMARY KEY,
+    id_facultad INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(100) NOT NULL,
 );
 
 CREATE TABLE Carrera (
-    id_carrera INT PRIMARY KEY,
+    id_carrera INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(100) NOT NULL,
     id_facultad INT NOT NULL,
     FOREIGN KEY (id_facultad) REFERENCES Facultad(id_facultad)
@@ -70,12 +70,12 @@ FOREIGN KEY (id_carrera) REFERENCES Carrera(id_carrera);
 
 
 CREATE TABLE Especializacion (
-    id_especializacion INT PRIMARY KEY,
+    id_especializacion INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE Profesor (
-    id_profesor INT PRIMARY KEY,
+    id_profesor INT PRIMARY KEY IDENTITY(1,1),
     id_usuario INT NOT NULL,
     id_facultad INT NOT NULL,
     id_especializacion INT,
@@ -105,7 +105,7 @@ CREATE TABLE Profesor (
 
 
 CREATE TABLE Asignatura (
-    id_asignatura INT PRIMARY KEY,
+    id_asignatura INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(100) NOT NULL,
     descripcion TEXT,
     creditos INT NOT NULL,
@@ -114,7 +114,7 @@ CREATE TABLE Asignatura (
 );
 
 CREATE TABLE Grupo (
-    id_grupo INT PRIMARY KEY,
+    id_grupo INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(50) NOT NULL,
     capacidad INT NOT NULL,
     id_asignatura INT NOT NULL,
@@ -128,7 +128,7 @@ CREATE TABLE Grupo (
 );
 
 CREATE TABLE Estudiante_Grupo (
-    id_estudiante_grupo INT PRIMARY KEY,
+    id_estudiante_grupo INT PRIMARY KEY IDENTITY(1,1),
     id_estudiante INT NOT NULL,
     id_grupo INT NOT NULL,
     FOREIGN KEY (id_estudiante) REFERENCES Estudiante(id_estudiante),
@@ -136,19 +136,19 @@ CREATE TABLE Estudiante_Grupo (
 );
 
 CREATE TABLE Periodo (
-    id_periodo INT PRIMARY KEY,
+    id_periodo INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(50) NOT NULL,
     fecha_creacion DATETIME,
     fecha_modificacion DATETIME,
 );
 
 CREATE TABLE Tipo_Calificacion (
-    id_tipo_calificacion INT PRIMARY KEY,
+    id_tipo_calificacion INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE Calificacion (
-    id_calificacion INT PRIMARY KEY,
+    id_calificacion INT PRIMARY KEY IDENTITY(1,1),
     id_estudiante_grupo INT NOT NULL,
     id_asignatura INT NOT NULL,
     id_periodo INT NOT NULL,
@@ -165,7 +165,7 @@ ALTER TABLE Calificacion ADD FOREIGN KEY (tipo_calificacion) REFERENCES Tipo_Cal
 
 
 CREATE TABLE Evento (
-id_evento INT PRIMARY KEY,
+id_evento INT PRIMARY KEY IDENTITY(1,1),
 nombre VARCHAR(100) NOT NULL,
 fecha_inicio DATETIME NOT NULL,
 fecha_fin DATETIME NOT NULL,
@@ -175,7 +175,7 @@ CONSTRAINT chk_evento_fecha_inicio_fecha CHECK (fecha_fin > fecha_inicio)
 
 
 CREATE TABLE EventoGrupo (
-id_evento INT NOT NULL,
+id_evento INT NOT NULL IDENTITY(1,1),
 id_grupo INT NOT NULL,
 PRIMARY KEY (id_evento, id_grupo),
 FOREIGN KEY (id_evento) REFERENCES Evento(id_evento),
@@ -184,8 +184,9 @@ FOREIGN KEY (id_grupo) REFERENCES Grupo(id_grupo)
 
 
 
--- Agregar algunos datos de ejemplo
-INSERT INTO NivelEducativo (id_nivel_educativo, nombre) VALUES (1, 'Primaria');
-INSERT INTO NivelEducativo (id_nivel_educativo, nombre) VALUES (2, 'Secundaria');
-INSERT INTO NivelEducativo (id_nivel_educativo, nombre) VALUES (3, 'Bachiller');
-INSERT INTO NivelEducativo (id_nivel_educativo, nombre) VALUES (4, 'Universidad');
+
+
+--Ejemplo para ingresar datos
+
+INSERT INTO NivelEducativo ( nombre) VALUES ('Secundaria');
+go 100
