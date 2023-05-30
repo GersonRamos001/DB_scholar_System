@@ -67,12 +67,8 @@ CREATE TABLE evento (
 	CONSTRAINT chk_evento_fecha_inicio_fecha CHECK (fecha_fin > fecha_inicio)
 );
 
-<<<<<<< HEAD
+
 -- sp crear usuario al ingresar nuevo estudiante
-=======
-
-
->>>>>>> 8fafe12dee4c5b7b0f3a3da911a904506cdef9ca
 CREATE TABLE profesor (
     id_profesor INT PRIMARY KEY IDENTITY(1,1),
     id_usuario INT,
