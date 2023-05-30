@@ -7,7 +7,8 @@ CREATE TABLE usuario (
     nombre_usuario VARCHAR(50) NOT NULL,
     contrasena VARCHAR(50) NOT NULL,
     fecha_creacion DATETIME NOT NULL DEFAULT GETDATE(),
-	fecha_modificacion DATETIME
+	fecha_modificacion DATETIME,
+	CONSTRAINT uc_nombre_usuario UNIQUE (nombre_usuario) -- sp crear nombre usuario
 );
 
 CREATE TABLE roles (
@@ -70,9 +71,10 @@ CREATE TABLE evento (
 	CONSTRAINT chk_evento_fecha_inicio_fecha CHECK (fecha_fin > fecha_inicio)
 );
 
+-- sp crear usuario al ingresar nuevo estudiante
 CREATE TABLE profesor (
     id_profesor INT PRIMARY KEY IDENTITY(1,1),
-    id_usuario INT NOT NULL,
+    id_usuario INT,
     id_facultad INT NOT NULL,
     id_especializacion INT,
     nombre VARCHAR(50) NOT NULL,
@@ -111,6 +113,7 @@ CREATE TABLE grupo (
     CONSTRAINT chk_grupo_hora_inicio_hora_fin CHECK (hora_fin > hora_inicio)
 );
 
+-- sp crear usuario al ingresar nuevo estudiante
 CREATE TABLE estudiante (
     id_estudiante INT PRIMARY KEY IDENTITY(1,1),
     id_usuario INT NOT NULL,
