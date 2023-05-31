@@ -451,3 +451,23 @@ END;
 --SE EJECUTA DE LA SIGUIENTE MANERA 
 
 EXEC BuscarMateriasPorEstudiante @idEstudiante = 11; -- Reemplaza 123 con el ID del estudiante deseado
+
+--Vista para ver las materias por carrera:
+CREATE VIEW vista_materias_por_carrera AS
+SELECT c.nombre AS nombre_carrera, a.nombre AS nombre_asignatura
+FROM carreras c
+JOIN asignaturas a ON c.id_carrera = a.id_carrera;
+
+--PROBAMOS LA VISTA 
+SELECT *
+FROM vista_materias_por_carrera;
+
+--Vista para ver las carreras por facultades:
+
+CREATE VIEW vista_carreras_por_facultades AS
+SELECT f.nombre AS nombre_facultad, c.nombre AS nombre_carrera
+FROM facultades f
+JOIN carreras c ON f.id_facultad = c.id_facultad;
+
+SELECT *
+FROM vista_carreras_por_facultades;
