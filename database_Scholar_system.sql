@@ -467,3 +467,36 @@ JOIN carreras c ON f.id_facultad = c.id_facultad;
 
 SELECT *
 FROM vista_carreras_por_facultades;
+
+/* 				SP 			*/
+-- Crear carnet
+create procedure generar_carnet
+	@id_estudiante
+AS
+	BEGIN
+		@estudiante = SELECT e.* FROM estudiante e WHERE e.id_estudiante = @id_estudiante
+		@estudiante_det = SELECT p.* FROM persona p ON where p.id_persona = @id_estudiante
+		
+		-- inicial ambos apellidos
+		@iniciales_apellido = select concat(substring(e.apellido_materno, 1, 1), substring(e.apellido_paterno, 1, 1)) from @estudiante_det e
+		
+		-- id_facultad + id_carrera + año
+		@correlativo_carrera = select * from @estudiante e inner join carrera c on ()
+		@numeros_carnet = 
+	END
+
+/* 			FIN SP 				*/
+
+/* 			TRIGGERS 			*/
+-- Manda a llamar sp para crear carnet
+CREATE TRIGGER trigger_carnet ON estudiante AFTER INSERT 
+AS
+	select i.* from inserted i
+
+-- Creacion de usuario el crear estudiante
+
+-- Creacion de usuario al crear profesor
+
+-- Prevenir delete de ciertas tablas
+/* 			FIN TRIGGERS 			*/
+
