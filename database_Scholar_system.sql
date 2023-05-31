@@ -182,16 +182,16 @@ CREATE TABLE numbers (
 -- Insertar usuarios
 INSERT INTO UsuariosSistema.usuarios (id_rol, nombre_usuario, contrasena, fecha_creacion, fecha_modificacion)
 SELECT
-    -- Generar un n�mero aleatorio entre 1 y 3 para seleccionar un rol
+    -- Generar un número aleatorio entre 1 y 3 para seleccionar un rol
     FLOOR(RAND() * 3) + 1 AS id_rol,
     -- Generar un nombre de usuario aleatorio
     CONCAT('usuario', ROW_NUMBER() OVER (ORDER BY (SELECT NULL))) AS nombre_usuario,
-    -- Establecer una contrase�a temporal para todos los usuarios
+    -- Establecer una contraseña temporal para todos los usuarios
     'password123' AS contrasena,
     GETDATE() AS fecha_creacion,
     GETDATE() AS fecha_modificacion
 FROM
-    -- Utilizar la cl�usula VALUES para generar una secuencia de n�meros del 1 al 10
+    -- Utilizar la cláusula VALUES para generar una secuencia de números del 1 al 10
     (VALUES (1), (2), (3), (4), (5), (6), (7), (8), (9), (10)) AS numbers(number);
 
 
@@ -202,7 +202,7 @@ INSERT INTO facultades (nombre)
 VALUES ('FACULTAD DE INGENIERIA'),('FACULTAD DE CIENCIAS SOCIALES'),('FACULTAD DE MEDICINA'),('FACULTAD DE ARTES Y HUMANIDADES');
 
 INSERT INTO especializaciones (nombre)
-VALUES ('Psicolog�a Cl�nica'),('Medicina Interna'),('Ingenier�a de Software');
+VALUES ('Psicología Clínica'),('Medicina Interna'),('Ingeniería de Software');
 
 INSERT INTO periodos (nombre, fecha_creacion, fecha_modificacion)
 VALUES 
@@ -217,51 +217,51 @@ VALUES
   ('Examen'),
   ('Tarea'),
   ('Proyecto'),
-  ('Participaci�n'),
-  ('Evaluaci�n final');
+  ('Participación'),
+  ('Evaluación final');
 
 
   INSERT INTO carreras (nombre, id_facultad)
 VALUES
-  ('Ingenier�a Civil', 1),
+  ('Ingeniería Civil', 1),
   ('Medicina', 2),
-  ('Psicolog�a', 3),
-  ('Administraci�n de Empresas', 4),
+  ('Psicología', 3),
+  ('Administración de Empresas', 4),
   ('Derecho', 1),
   ('Arquitectura', 2),
-  ('Enfermer�a', 3),
+  ('Enfermería', 3),
   ('Contabilidad', 4),
-  ('Educaci�n', 1),
-  ('Ciencias de la Computaci�n', 2);
+  ('Educación', 1),
+  ('Ciencias de la Computación', 2);
 
 
     INSERT INTO asignaturas (nombre, descripcion, creditos, id_carrera)
 VALUES
-  ('Matem�ticas', 'Asignatura de matem�ticas b�sicas', 4, 1),
+  ('Matemáticas', 'Asignatura de matemáticas básicas', 4, 1),
   ('Historia', 'Asignatura de historia universal', 3, 2),
-  ('Programaci�n', 'Asignatura de programaci�n en C++', 5, 3),
-  ('Econom�a', 'Asignatura de principios de econom�a', 3, 4),
-  ('Literatura', 'Asignatura de literatura contempor�nea', 3, 1),
-  ('F�sica', 'Asignatura de f�sica cl�sica', 4, 2),
-  ('Qu�mica', 'Asignatura de qu�mica org�nica', 4, 3),
+  ('Programación', 'Asignatura de programación en C++', 5, 3),
+  ('Economía', 'Asignatura de principios de economía', 3, 4),
+  ('Literatura', 'Asignatura de literatura contemporánea', 3, 1),
+  ('Física', 'Asignatura de física clásica', 4, 2),
+  ('Química', 'Asignatura de química orgánica', 4, 3),
   ('Contabilidad', 'Asignatura de contabilidad financiera', 3, 4),
-  ('Educaci�n F�sica', 'Asignatura de educaci�n f�sica y deportes', 2, 1),
-  ('Ingl�s', 'Asignatura de ingl�s avanzado', 3, 2);
+  ('Educación Física', 'Asignatura de educación física y deportes', 2, 1),
+  ('Inglés', 'Asignatura de inglés avanzado', 3, 2);
 
 
   INSERT INTO persona (nombres, apellido_paterno, apellido_materno, fecha_nacimiento, sexo, nacionalidad, email, telefono, celular, direccion)
 VALUES
-    ('Juan', 'L�pez', 'Garc�a', '1990-05-15', 'M', 'Mexicana', 'juan.lopez@example.com', '555-1234', '555-5678', 'Calle Principal 123'),
-    ('Mar�a', 'Mart�nez', 'Hern�ndez', '1992-09-20', 'F', 'Mexicana', 'maria.martinez@example.com', '555-5678', '555-9012', 'Avenida Central 456'),
-    ('Pedro', 'Gonz�lez', 'Ram�rez', '1988-02-10', 'M', 'Mexicana', 'pedro.gonzalez@example.com', '555-9012', '555-3456', 'Calle Secundaria 789'),
-    ('Ana', 'Hern�ndez', 'L�pez', '1995-07-03', 'F', 'Mexicana', 'ana.hernandez@example.com', '555-3456', '555-7890', 'Avenida Principal 123'),
-    ('Carlos', 'D�az', 'G�mez', '1991-11-28', 'M', 'Mexicana', 'carlos.diaz@example.com', '555-7890', '555-2345', 'Calle Central 456'),
+    ('Juan', 'López', 'García', '1990-05-15', 'M', 'Mexicana', 'juan.lopez@example.com', '555-1234', '555-5678', 'Calle Principal 123'),
+    ('María', 'Martínez', 'Hernández', '1992-09-20', 'F', 'Mexicana', 'maria.martinez@example.com', '555-5678', '555-9012', 'Avenida Central 456'),
+    ('Pedro', 'González', 'Ramírez', '1988-02-10', 'M', 'Mexicana', 'pedro.gonzalez@example.com', '555-9012', '555-3456', 'Calle Secundaria 789'),
+    ('Ana', 'Hernández', 'López', '1995-07-03', 'F', 'Mexicana', 'ana.hernandez@example.com', '555-3456', '555-7890', 'Avenida Principal 123'),
+    ('Carlos', 'Díaz', 'Gómez', '1991-11-28', 'M', 'Mexicana', 'carlos.diaz@example.com', '555-7890', '555-2345', 'Calle Central 456'),
     ('Laura', 'Torres', 'Vargas', '1987-04-12', 'F', 'Mexicana', 'laura.torres@example.com', '555-2345', '555-6789', 'Avenida Secundaria 789'),
-    ('Luis', 'Rojas', 'P�rez', '1993-08-17', 'M', 'Mexicana', 'luis.rojas@example.com', '555-6789', '555-0123', 'Calle Principal 123'),
-    ('Fernanda', 'Mendoza', 'Guzm�n', '1989-01-05', 'F', 'Mexicana', 'fernanda.mendoza@example.com', '555-0123', '555-4567', 'Avenida Central 456'),
-    ('Javier', 'Vargas', 'Hern�ndez', '1996-06-21', 'M', 'Mexicana', 'javier.vargas@example.com', '555-4567', '555-8901', 'Calle Secundaria 789'),
+    ('Luis', 'Rojas', 'Pérez', '1993-08-17', 'M', 'Mexicana', 'luis.rojas@example.com', '555-6789', '555-0123', 'Calle Principal 123'),
+    ('Fernanda', 'Mendoza', 'Guzmán', '1989-01-05', 'F', 'Mexicana', 'fernanda.mendoza@example.com', '555-0123', '555-4567', 'Avenida Central 456'),
+    ('Javier', 'Vargas', 'Hernández', '1996-06-21', 'M', 'Mexicana', 'javier.vargas@example.com', '555-4567', '555-8901', 'Calle Secundaria 789'),
     ('Mariana', 'Ortega', 'Luna', '1994-10-31', 'F', 'Mexicana', 'mariana.ortega@example.com', '555-8901', '555-2345', 'Avenida Principal 123'),
-    ('Gabriel', 'S�nchez', 'Delgado', '1986-03-08', 'M', 'Mexicana', 'gabriel.sanchez@example.com', '555-2345', '555-6789', 'Calle Central 456'),
+    ('Gabriel', 'Sánchez', 'Delgado', '1986-03-08', 'M', 'Mexicana', 'gabriel.sanchez@example.com', '555-2345', '555-6789', 'Calle Central 456'),
     ('Michael', 'Johnson', 'Smith', '1991-05-25', 'M', 'Estadounidense', 'michael.johnson@example.com', '555-1234', '555-5678', '123 Main St'),
     ('Jennifer', 'Williams', 'Brown', '1989-08-12', 'F', 'Estadounidense', 'jennifer.williams@example.com', '555-5678', '555-9012', '456 Elm St'),
     ('Christopher', 'Jones', 'Davis', '1992-02-18', 'M', 'Estadounidense', 'christopher.jones@example.com', '555-9012', '555-3456', '789 Oak St'),
@@ -274,27 +274,27 @@ VALUES
     ('Amanda', 'Harris', 'Wilson', '1989-10-12', 'F', 'Estadounidense', 'amanda.harris@example.com', '555-8901', '555-2345', '987 Cedar Ave'),
     ('Brandon', 'Brown', 'Harris', '1994-03-05', 'M', 'Estadounidense', 'brandon.brown@example.com', '555-2345', '555-6789', '123 Main St'),
     ('Ashley', 'Davis', 'Anderson', '1988-07-28', 'F', 'Estadounidense', 'ashley.davis@example.com', '555-6789', '555-0123', '456 Elm St'),
-	('Alejandro', 'G�mez', 'Hern�ndez', '1992-07-12', 'M', 'Mexicana', 'alejandro.gomez@example.com', '555-1234', '555-5678', 'Calle Principal 123'),
-    ('Isabella', 'Rodr�guez', 'D�az', '1994-03-25', 'F', 'Mexicana', 'isabella.rodriguez@example.com', '555-5678', '555-9012', 'Avenida Central 456'),
-    ('Santiago', 'S�nchez', 'Vargas', '1990-09-02', 'M', 'Mexicana', 'santiago.sanchez@example.com', '555-9012', '555-3456', 'Calle Secundaria 789'),
-    ('Valentina', 'Torres', 'L�pez', '1993-11-19', 'F', 'Mexicana', 'valentina.torres@example.com', '555-3456', '555-7890', 'Avenida Principal 123'),
-    ('Diego', 'Hern�ndez', 'Gonz�lez', '1991-05-07', 'M', 'Mexicana', 'diego.hernandez@example.com', '555-7890', '555-2345', 'Calle Central 456'),
-    ('Ximena', 'Mart�nez', 'Ram�rez', '1988-08-14', 'F', 'Mexicana', 'ximena.martinez@example.com', '555-2345', '555-6789', 'Avenida Secundaria 789'),
-    ('Emilio', 'L�pez', 'Rojas', '1994-02-23', 'M', 'Mexicana', 'emilio.lopez@example.com', '555-6789', '555-0123', 'Calle Principal 123'),
-    ('Camila', 'Gonz�lez', 'Mendoza', '1996-09-28', 'F', 'Mexicana', 'camila.gonzalez@example.com', '555-0123', '555-4567', 'Avenida Central 456'),
-    ('Joaqu�n', 'Mendoza', 'Vargas', '1990-12-07', 'M', 'Mexicana', 'joaquin.mendoza@example.com', '555-4567', '555-8901', 'Calle Secundaria 789'),
-    ('Sof�a', 'Hern�ndez', 'Ortega', '1989-07-26', 'F', 'Mexicana', 'sofia.hernandez@example.com', '555-8901', '555-2345', 'Avenida Principal 123'),
-	('Carlos', 'Hern�ndez', 'L�pez', '1990-05-15', 'M', 'Salvadore�a', 'carlos.hernandez@example.com', '555-1234', '555-5678', 'Calle Principal 123'),
-    ('Ana', 'Gonz�lez', 'Mart�nez', '1992-09-20', 'F', 'Salvadore�a', 'ana.gonzalez@example.com', '555-5678', '555-9012', 'Avenida Central 456'),
-    ('Luis', 'L�pez', 'Ram�rez', '1988-02-10', 'M', 'Salvadore�a', 'luis.lopez@example.com', '555-9012', '555-3456', 'Calle Secundaria 789'),
-    ('Mar�a', 'Hern�ndez', 'Gonz�lez', '1995-07-03', 'F', 'Salvadore�a', 'maria.hernandez@example.com', '555-3456', '555-7890', 'Avenida Principal 123'),
-    ('Javier', 'D�az', 'G�mez', '1991-11-28', 'M', 'Salvadore�a', 'javier.diaz@example.com', '555-7890', '555-2345', 'Calle Central 456'),
-    ('Sof�a', 'Torres', 'Vargas', '1987-04-12', 'F', 'Salvadore�a', 'sofia.torres@example.com', '555-2345', '555-6789', 'Avenida Secundaria 789'),
-    ('Diego', 'Rojas', 'P�rez', '1993-08-17', 'M', 'Salvadore�a', 'diego.rojas@example.com', '555-6789', '555-0123', 'Calle Principal 123'),
-    ('Valeria', 'Mendoza', 'Guzm�n', '1989-01-05', 'F', 'Salvadore�a', 'valeria.mendoza@example.com', '555-0123', '555-4567', 'Avenida Central 456'),
-    ('Gabriela', 'Vargas', 'Hern�ndez', '1996-06-21', 'F', 'Salvadore�a', 'gabriela.vargas@example.com', '555-4567', '555-8901', 'Calle Secundaria 789'),
-    ('Daniel', 'Ortega', 'Luna', '1994-10-31', 'M', 'Salvadore�a', 'daniel.ortega@example.com', '555-8901', '555-2345', 'Avenida Principal 123'),
-    ('Fernando', 'S�nchez', 'Delgado', '1986-03-08', 'M', 'Salvadore�a', 'fernando.sanchez@example.com', '555-2345', '555-6789', 'Calle Central 456');
+	('Alejandro', 'Gómez', 'Hernández', '1992-07-12', 'M', 'Mexicana', 'alejandro.gomez@example.com', '555-1234', '555-5678', 'Calle Principal 123'),
+    ('Isabella', 'Rodríguez', 'Díaz', '1994-03-25', 'F', 'Mexicana', 'isabella.rodriguez@example.com', '555-5678', '555-9012', 'Avenida Central 456'),
+    ('Santiago', 'Sánchez', 'Vargas', '1990-09-02', 'M', 'Mexicana', 'santiago.sanchez@example.com', '555-9012', '555-3456', 'Calle Secundaria 789'),
+    ('Valentina', 'Torres', 'López', '1993-11-19', 'F', 'Mexicana', 'valentina.torres@example.com', '555-3456', '555-7890', 'Avenida Principal 123'),
+    ('Diego', 'Hernández', 'González', '1991-05-07', 'M', 'Mexicana', 'diego.hernandez@example.com', '555-7890', '555-2345', 'Calle Central 456'),
+    ('Ximena', 'Martínez', 'Ramírez', '1988-08-14', 'F', 'Mexicana', 'ximena.martinez@example.com', '555-2345', '555-6789', 'Avenida Secundaria 789'),
+    ('Emilio', 'López', 'Rojas', '1994-02-23', 'M', 'Mexicana', 'emilio.lopez@example.com', '555-6789', '555-0123', 'Calle Principal 123'),
+    ('Camila', 'González', 'Mendoza', '1996-09-28', 'F', 'Mexicana', 'camila.gonzalez@example.com', '555-0123', '555-4567', 'Avenida Central 456'),
+    ('Joaquín', 'Mendoza', 'Vargas', '1990-12-07', 'M', 'Mexicana', 'joaquin.mendoza@example.com', '555-4567', '555-8901', 'Calle Secundaria 789'),
+    ('Sofía', 'Hernández', 'Ortega', '1989-07-26', 'F', 'Mexicana', 'sofia.hernandez@example.com', '555-8901', '555-2345', 'Avenida Principal 123'),
+	('Carlos', 'Hernández', 'López', '1990-05-15', 'M', 'Salvadoreña', 'carlos.hernandez@example.com', '555-1234', '555-5678', 'Calle Principal 123'),
+    ('Ana', 'González', 'Martínez', '1992-09-20', 'F', 'Salvadoreña', 'ana.gonzalez@example.com', '555-5678', '555-9012', 'Avenida Central 456'),
+    ('Luis', 'López', 'Ramírez', '1988-02-10', 'M', 'Salvadoreña', 'luis.lopez@example.com', '555-9012', '555-3456', 'Calle Secundaria 789'),
+    ('María', 'Hernández', 'González', '1995-07-03', 'F', 'Salvadoreña', 'maria.hernandez@example.com', '555-3456', '555-7890', 'Avenida Principal 123'),
+    ('Javier', 'Díaz', 'Gómez', '1991-11-28', 'M', 'Salvadoreña', 'javier.diaz@example.com', '555-7890', '555-2345', 'Calle Central 456'),
+    ('Sofía', 'Torres', 'Vargas', '1987-04-12', 'F', 'Salvadoreña', 'sofia.torres@example.com', '555-2345', '555-6789', 'Avenida Secundaria 789'),
+    ('Diego', 'Rojas', 'Pérez', '1993-08-17', 'M', 'Salvadoreña', 'diego.rojas@example.com', '555-6789', '555-0123', 'Calle Principal 123'),
+    ('Valeria', 'Mendoza', 'Guzmán', '1989-01-05', 'F', 'Salvadoreña', 'valeria.mendoza@example.com', '555-0123', '555-4567', 'Avenida Central 456'),
+    ('Gabriela', 'Vargas', 'Hernández', '1996-06-21', 'F', 'Salvadoreña', 'gabriela.vargas@example.com', '555-4567', '555-8901', 'Calle Secundaria 789'),
+    ('Daniel', 'Ortega', 'Luna', '1994-10-31', 'M', 'Salvadoreña', 'daniel.ortega@example.com', '555-8901', '555-2345', 'Avenida Principal 123'),
+    ('Fernando', 'Sánchez', 'Delgado', '1986-03-08', 'M', 'Salvadoreña', 'fernando.sanchez@example.com', '555-2345', '555-6789', 'Calle Central 456');
 
 
 INSERT INTO profesores (id_profesor, id_facultad, id_especializacion, fecha_ingreso, salario)
@@ -338,9 +338,9 @@ VALUES
     (4, 'Marketing'),
     (5, 'Operaciones'),
     (6, 'Desarrollo de Software'),
-    (7, 'Atenci�n al Cliente'),
-    (8, 'Log�stica'),
-    (9, 'Administraci�n'),
+    (7, 'Atención al Cliente'),
+    (8, 'Logística'),
+    (9, 'Administración'),
     (10, 'Finanzas');
 
 INSERT INTO empleados (id_empleado, id_departamento, fecha_ingreso, salario)
@@ -408,6 +408,9 @@ SELECT *
 FROM vista_estudiantes_matriculados
 WHERE id_carrera = 1    -- <id_carrera_especifico>
 
+
+--VISTA PARA BUSCAR ESTUDIANTES POR MATERIAS
+
 CREATE VIEW vista_estudiantes_por_materias AS
 SELECT p.id_persona, p.nombres, p.apellido_paterno, p.apellido_materno, a.id_asignatura, a.nombre
 FROM persona p
@@ -418,3 +421,33 @@ JOIN asignaturas a ON g.id_asignatura = a.id_asignatura;
 
 SELECT *
 FROM vista_estudiantes_por_materias;
+
+
+-- vista para ver los grupos a los que pertenecen los estudiantes
+CREATE VIEW vista_grupos_estudiantes AS
+SELECT e.id_estudiante, p.nombres, p.apellido_paterno, p.apellido_materno, g.id_grupo, g.nombre AS nombre_grupo
+FROM estudiante e
+JOIN persona p ON e.id_estudiante = p.id_persona
+JOIN estudiantes_grupos eg ON e.id_estudiante = eg.id_estudiante
+JOIN grupos g ON eg.id_grupo = g.id_grupo;
+
+SELECT *
+FROM vista_grupos_estudiantes;
+
+
+
+--PROCEDIMIENTO ALMACENADO PARA BUSCAR POR ID DE ESTUDIANTE LAS MATERIAS QUE TIENE ESCRITAS 
+CREATE PROCEDURE BuscarMateriasPorEstudiante
+    @idEstudiante INT
+AS
+BEGIN
+    SELECT a.id_asignatura, a.nombre AS nombre_asignatura
+    FROM asignaturas a
+    INNER JOIN grupos g ON a.id_asignatura = g.id_asignatura
+    INNER JOIN estudiantes_grupos eg ON g.id_grupo = eg.id_grupo
+    WHERE eg.id_estudiante = @idEstudiante;
+END;
+
+--SE EJECUTA DE LA SIGUIENTE MANERA 
+
+EXEC BuscarMateriasPorEstudiante @idEstudiante = 11; -- Reemplaza 123 con el ID del estudiante deseado
