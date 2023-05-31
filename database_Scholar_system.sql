@@ -174,10 +174,6 @@ CREATE TABLE calificaciones (
 INSERT INTO UsuariosSistema.roles (nombre_rol)
 VALUES ('administrador'), ('estudiante'), ('profesor');
 
--- Crear la tabla numbers
-CREATE TABLE numbers (
-    number INT PRIMARY KEY
-);
 
 -- Insertar usuarios
 INSERT INTO UsuariosSistema.usuarios (id_rol, nombre_usuario, contrasena, fecha_creacion, fecha_modificacion)
