@@ -481,7 +481,7 @@ AS
 		@iniciales_apellido = select concat(substring(e.apellido_materno, 1, 1), substring(e.apellido_paterno, 1, 1)) from @estudiante_det e
 		
 		-- id_facultad + id_carrera + año
-		@correlativo_carrera = select * from @estudiante e inner join carrera c on ()
+		@correlativo_carrera = select concat(c.id_facultad, c.id_carrera)  from @estudiante e inner join carrera c on (c.id_carrera = e.id_carrera)
 		@numeros_carnet = 
 	END
 
