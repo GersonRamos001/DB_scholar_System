@@ -504,15 +504,15 @@ BEGIN
 	-- Si es estudiante
 	IF (SELECT COUNT(*) FROM estudiante e WHERE @id_persona = e.id_estudiante) > 0
 	BEGIN
-		SELECT @id_rol = r.id_rol FROM roles r WHERE r.nombre_rol = 'estudiante'
+		SELECT @id_rol = r.id_rol FROM UsuariosSistema.roles r WHERE r.nombre_rol = 'estudiante'
 	END
 	-- Sino es profesor
 	ELSE 
 	BEGIN
-		SELECT @id_rol = r.id_rol FROM roles r WHERE r.nombre_rol = 'profesor'
+		SELECT @id_rol = r.id_rol FROM UsuariosSistema.roles r WHERE r.nombre_rol = 'profesor'
 	END
 	
-	INSERT INTO usuario(id_rol, nombre_usuario, contrasena) VALUES (@id_rol ,@nombre_usuario, @contrasena);
+	INSERT INTO UsuariosSistema.usuario(id_rol, nombre_usuario, contrasena) VALUES (@id_rol ,@nombre_usuario, @contrasena);
 END
 
 /* ----------------------------------------------------------------------------------------------------- */
@@ -589,7 +589,7 @@ END
 /*												SCHEMAS													 */
 /* ----------------------------------------------------------------------------------------------------- */
 
-CREATE USER SCHEMA dba_schema;
+CREATE SCHEMA dba_schema;
 -- pasa todo control de dbo a dba_schema
 ALTER SCHEMA dbo TRANSFER dba_schema;
 
@@ -602,7 +602,7 @@ ALTER SCHEMA dbo TRANSFER dba_schema;
 /*												USERS													 */
 /* ----------------------------------------------------------------------------------------------------- */
 
-CREATE USER dba FOR LOGIN dba_login WITH DEFAULT SCHEMA = dba_schema;
+CREATE USER dba FOR LOGIN dba_login WITH DEFAULT_SCHEMA = dba_schema;
 
 /* ----------------------------------------------------------------------------------------------------- */
 /*											FIN USERS													 */
