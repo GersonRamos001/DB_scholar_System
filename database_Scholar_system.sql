@@ -1,4 +1,17 @@
-create DATABASE sistema_escolar;
+/* ----------------------------------------------------------------------------------------------------- */
+/*													LOGIN												 */
+/* ----------------------------------------------------------------------------------------------------- */
+USE master;
+
+CREATE LOGIN dba_login WITH password = 't3$t3O12';
+CREATE LOGIN admin_login WITH password = 't3$t3O12';
+CREATE LOGIN design_login WITH password = 't3$t3O12';
+/* ----------------------------------------------------------------------------------------------------- */
+/*												FIN LOGIN												 */
+/* ----------------------------------------------------------------------------------------------------- */
+
+
+CREATE DATABASE sistema_escolar;
 
 USE sistema_escolar;
 
@@ -393,7 +406,9 @@ VALUES
     (10, 10, 1, 1, 6.5);
 
 
-	--VISTAS
+/* ----------------------------------------------------------------------------------------------------- */
+/*												VIEWS													 */
+/* ----------------------------------------------------------------------------------------------------- */
 
 CREATE VIEW vista_estudiantes_matriculados AS
 SELECT e.id_estudiante, e.carnet, e.id_carrera, p.nombres, p.apellido_paterno, p.apellido_materno
@@ -430,24 +445,6 @@ JOIN grupos g ON eg.id_grupo = g.id_grupo;
 SELECT *
 FROM vista_grupos_estudiantes;
 
-
-
---PROCEDIMIENTO ALMACENADO PARA BUSCAR POR ID DE ESTUDIANTE LAS MATERIAS QUE TIENE ESCRITAS 
-CREATE PROCEDURE BuscarMateriasPorEstudiante
-    @idEstudiante INT
-AS
-BEGIN
-    SELECT a.id_asignatura, a.nombre AS nombre_asignatura
-    FROM asignaturas a
-    INNER JOIN grupos g ON a.id_asignatura = g.id_asignatura
-    INNER JOIN estudiantes_grupos eg ON g.id_grupo = eg.id_grupo
-    WHERE eg.id_estudiante = @idEstudiante;
-END;
-
---SE EJECUTA DE LA SIGUIENTE MANERA 
-
-EXEC BuscarMateriasPorEstudiante @idEstudiante = 11; -- Reemplaza 123 con el ID del estudiante deseado
-
 --Vista para ver las materias por carrera:
 CREATE VIEW vista_materias_por_carrera AS
 SELECT c.nombre AS nombre_carrera, a.nombre AS nombre_asignatura
@@ -467,36 +464,158 @@ JOIN carreras c ON f.id_facultad = c.id_facultad;
 
 SELECT *
 FROM vista_carreras_por_facultades;
+/* ----------------------------------------------------------------------------------------------------- */
+/*											FIN VIEWS													 */
+/* ----------------------------------------------------------------------------------------------------- */
 
-/* 				SP 			*/
--- Crear carnet
-create procedure generar_carnet
-	@id_estudiante
+
+/* ----------------------------------------------------------------------------------------------------- */
+/*													SP													 */
+/* ----------------------------------------------------------------------------------------------------- */
+--PROCEDIMIENTO ALMACENADO PARA BUSCAR POR ID DE ESTUDIANTE LAS MATERIAS QUE TIENE ESCRITAS 
+CREATE PROCEDURE BuscarMateriasPorEstudiante
+    @idEstudiante INT
 AS
+BEGIN
+    SELECT a.id_asignatura, a.nombre AS nombre_asignatura
+    FROM asignaturas a
+    INNER JOIN grupos g ON a.id_asignatura = g.id_asignatura
+    INNER JOIN estudiantes_grupos eg ON g.id_grupo = eg.id_grupo
+    WHERE eg.id_estudiante = @idEstudiante;
+END;
+
+--SE EJECUTA DE LA SIGUIENTE MANERA 
+
+EXEC BuscarMateriasPorEstudiante @idEstudiante = 11; -- Reemplaza 123 con el ID del estudiante deseado
+
+-- Crea usuario para una persona en el sistema
+CREATE PROCEDURE crear_usuario
+	@id_persona INT
+AS
+BEGIN
+	DECLARE
+		@nombre_usuario VARCHAR(50),
+		@id_rol INT,
+		@contrasena VARCHAR(50);
+	
+	SELECT @nombre_usuario = CONCAT(e.nombres, e.apellido_paterno) FROM persona e WHERE e.id_persona = @id_persona;
+	SELECT @contrasena = '123'; -- cambiar
+	
+	-- Si es estudiante
+	IF (SELECT COUNT(*) FROM estudiante e WHERE @id_persona = e.id_estudiante) > 0
 	BEGIN
-		@estudiante = SELECT e.* FROM estudiante e WHERE e.id_estudiante = @id_estudiante
-		@estudiante_det = SELECT p.* FROM persona p ON where p.id_persona = @id_estudiante
-		
-		-- inicial ambos apellidos
-		@iniciales_apellido = select concat(substring(e.apellido_materno, 1, 1), substring(e.apellido_paterno, 1, 1)) from @estudiante_det e
-		
-		-- id_facultad + id_carrera + año
-		@correlativo_carrera = select concat(c.id_facultad, c.id_carrera)  from @estudiante e inner join carrera c on (c.id_carrera = e.id_carrera)
-		@numeros_carnet = 
+		SELECT @id_rol = r.id_rol FROM roles r WHERE r.nombre_rol = 'estudiante'
 	END
+	-- Sino es profesor
+	ELSE 
+	BEGIN
+		SELECT @id_rol = r.id_rol FROM roles r WHERE r.nombre_rol = 'profesor'
+	END
+	
+	INSERT INTO usuario(id_rol, nombre_usuario, contrasena) VALUES (@id_rol ,@nombre_usuario, @contrasena);
+END
 
-/* 			FIN SP 				*/
+/* ----------------------------------------------------------------------------------------------------- */
+/*												FIN SP													 */
+/* ----------------------------------------------------------------------------------------------------- */
 
-/* 			TRIGGERS 			*/
--- Manda a llamar sp para crear carnet
-CREATE TRIGGER trigger_carnet ON estudiante AFTER INSERT 
-AS
-	select i.* from inserted i
+
+/* ----------------------------------------------------------------------------------------------------- */
+/*													TRIGGERS											 */
+/* ----------------------------------------------------------------------------------------------------- */
+-- Crea carnet al ingresar estudiante
+CREATE TRIGGER trigger_generar_carnet ON estudiante AFTER INSERT AS
+BEGIN
+	DECLARE
+		@id_estudiante INT,
+		@iniciales_apellido VARCHAR(2),
+		@anio VARCHAR(2),
+		@correlativo_carrera VARCHAR(6),
+		@carnet VARCHAR(8);
+		
+	SELECT @id_estudiante = i.id_estudiante FROM inserted i;
+	
+	SELECT @anio = CAST(YEAR(GETDATE()) AS VARCHAR(2));
+		
+	-- inicial ambos apellidos
+	SELECT @iniciales_apellido = CONCAT(SUBSTRING(e.apellido_materno, 1, 1), SUBSTRING(e.apellido_paterno, 1, 1)) 
+	FROM (SELECT p.* FROM persona p INNER JOIN estudiante e2 ON (p.id_persona = e2.id_estudiante)) e;
+		
+
+	-- id_facultad + id_carrera + año
+	SELECT @correlativo_carrera = CONCAT(c.id_facultad, c.id_carrera, SUBSTRING(@anio, 3, 4)) 
+							FROM estudiante e INNER JOIN carrera c ON (c.id_carrera = e.id_carrera);
+	SELECT @carnet = CONCAT(@iniciales_apellido, @correlativo_carrera);
+
+	UPDATE estudiante SET estudiante.carnet = @carnet FROM estudiante INNER JOIN inserted i ON (i.id_estudiante = estudiante.id_estudiante)
+END
+
+-- Evita la eliminacion de tablas
+CREATE TRIGGER trigger_integridad_borrado_tablas ON DATABASE FOR drop_table AS
+BEGIN
+	RAISERROR('No esta permitido borrar tablas!', 16, 1);
+	ROLLBACK TRANSACTION;
+END
+
 
 -- Creacion de usuario el crear estudiante
+CREATE TRIGGER trigger_crear_usuario_estudiante ON estudiante AFTER INSERT AS
+BEGIN
+	DECLARE
+		@id_persona INT;
+	
+	SELECT @id_persona = i.id_estudiante FROM inserted i;
+	
+	EXEC crear_usuario @id_persona;
+END
+
 
 -- Creacion de usuario al crear profesor
+CREATE TRIGGER trigger_crear_usuario_profesor ON profesores AFTER INSERT AS
+BEGIN
+	DECLARE
+		@id_persona INT;
+	
+	SELECT @id_persona = i.id_profesor FROM inserted i;
+	
+	EXEC crear_usuario @id_persona;
+END
 
--- Prevenir delete de ciertas tablas
-/* 			FIN TRIGGERS 			*/
+/* ----------------------------------------------------------------------------------------------------- */
+/*												FIN TRIGGERS											 */
+/* ----------------------------------------------------------------------------------------------------- */
+
+/* ----------------------------------------------------------------------------------------------------- */
+/*												SCHEMAS													 */
+/* ----------------------------------------------------------------------------------------------------- */
+
+CREATE USER SCHEMA dba_schema;
+-- pasa todo control de dbo a dba_schema
+ALTER SCHEMA dbo TRANSFER dba_schema;
+
+/* ----------------------------------------------------------------------------------------------------- */
+/*											FIN SCHEMAS													 */
+/* ----------------------------------------------------------------------------------------------------- */
+
+
+/* ----------------------------------------------------------------------------------------------------- */
+/*												USERS													 */
+/* ----------------------------------------------------------------------------------------------------- */
+
+CREATE USER dba FOR LOGIN dba_login WITH DEFAULT SCHEMA = dba_schema;
+
+/* ----------------------------------------------------------------------------------------------------- */
+/*											FIN USERS													 */
+/* ----------------------------------------------------------------------------------------------------- */
+
+/* ----------------------------------------------------------------------------------------------------- */
+/*												DCL														 */
+/* ----------------------------------------------------------------------------------------------------- */
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON OBJECT :: dba_schema TO dba WITH GRANT OPTION;
+
+/* ----------------------------------------------------------------------------------------------------- */
+/*												FIN DCL													 */
+/* ----------------------------------------------------------------------------------------------------- */
+
 
