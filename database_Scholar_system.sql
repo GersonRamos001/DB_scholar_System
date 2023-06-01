@@ -512,7 +512,7 @@ BEGIN
 		SELECT @id_rol = r.id_rol FROM UsuariosSistema.roles r WHERE r.nombre_rol = 'profesor'
 	END
 	
-	INSERT INTO UsuariosSistema.usuario(id_rol, nombre_usuario, contrasena) VALUES (@id_rol ,@nombre_usuario, @contrasena);
+	INSERT INTO UsuariosSistema.usuarios(id_rol, nombre_usuario, contrasena) VALUES (@id_rol ,@nombre_usuario, @contrasena);
 END
 
 /* ----------------------------------------------------------------------------------------------------- */
@@ -544,7 +544,7 @@ BEGIN
 
 	-- id_facultad + id_carrera + año
 	SELECT @correlativo_carrera = CONCAT(c.id_facultad, c.id_carrera, SUBSTRING(@anio, 3, 4)) 
-							FROM estudiante e INNER JOIN carrera c ON (c.id_carrera = e.id_carrera);
+							FROM estudiante e INNER JOIN carreras c ON (c.id_carrera = e.id_carrera);
 	SELECT @carnet = CONCAT(@iniciales_apellido, @correlativo_carrera);
 
 	UPDATE estudiante SET estudiante.carnet = @carnet FROM estudiante INNER JOIN inserted i ON (i.id_estudiante = estudiante.id_estudiante)
