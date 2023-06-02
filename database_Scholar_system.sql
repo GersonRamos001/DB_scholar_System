@@ -529,26 +529,28 @@ BEGIN
 	DECLARE
 		@id_estudiante INT,
 		@iniciales_apellido VARCHAR(2),
+		@id_facultad INT,
+		@id_carrera INT,
 		@anio VARCHAR(2),
-		@correlativo_carrera VARCHAR(6),
-		@carnet VARCHAR(8);
+		@carnet VARCHAR(10);
 		
 	SELECT @id_estudiante = i.id_estudiante FROM inserted i;
 	
-	SELECT @anio = CAST(YEAR(GETDATE()) AS VARCHAR(2));
-		
-	-- inicial ambos apellidos
-	SELECT @iniciales_apellido = CONCAT(SUBSTRING(e.apellido_materno, 1, 1), SUBSTRING(e.apellido_paterno, 1, 1)) 
-	FROM (SELECT p.* FROM persona p INNER JOIN estudiante e2 ON (p.id_persona = e2.id_estudiante)) e;
-		
-
-	-- id_facultad + id_carrera + año
-	SELECT @correlativo_carrera = CONCAT(c.id_facultad, c.id_carrera, SUBSTRING(@anio, 3, 4)) 
-							FROM estudiante e INNER JOIN carreras c ON (c.id_carrera = e.id_carrera);
-	SELECT @carnet = CONCAT(@iniciales_apellido, @correlativo_carrera);
-
-	UPDATE estudiante SET estudiante.carnet = @carnet FROM estudiante INNER JOIN inserted i ON (i.id_estudiante = estudiante.id_estudiante)
+	SELECT @id_facultad = c.id_facultad, @id_carrera = e.id_carrera, @anio = RIGHT(YEAR(GETDATE()), 2)
+	FROM inserted i INNER JOIN carreras c ON (c.id_carrera = i.id_carrera)
+	INNER JOIN estudiante e ON (e.id_estudiante = i.id_estudiante);
+	
+	SELECT @iniciales_apellido = CONCAT(SUBSTRING(p.apellido_paterno, 1, 1), SUBSTRING(p.apellido_materno, 1, 1))
+	FROM inserted i INNER JOIN persona p ON (p.id_persona = i.id_estudiante);
+	
+	SELECT @carnet = CONCAT(@iniciales_apellido, RIGHT('00' + CAST(@id_facultad AS VARCHAR(2)), 2), RIGHT('00' + CAST(@id_carrera AS VARCHAR(2)), 2), @anio);
+	
+	UPDATE estudiante SET carnet = @carnet WHERE id_estudiante = @id_estudiante;
 END
+
+--LO PROBAMOS
+INSERT INTO estudiante (id_estudiante, id_carrera, id_nivel_educativo)
+VALUES(1, 1, 1)
 
 -- Evita la eliminacion de tablas
 CREATE TRIGGER trigger_integridad_borrado_tablas ON DATABASE FOR drop_table AS
