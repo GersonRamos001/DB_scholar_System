@@ -13,9 +13,9 @@ CREATE LOGIN design_login WITH password = 't3$t3O12';
 /* ----------------------------------------------------------------------------------------------------- */
 /*													DDL													 */
 /* ----------------------------------------------------------------------------------------------------- */
-CREATE DATABASE sistema_escolar;
+CREATE DATABASE sistema_universitario;
 
-USE sistema_escolar;
+USE sistema_universitario;
 
 CREATE SCHEMA UsuariosSistema;
 
@@ -482,7 +482,7 @@ FROM vista_carreras_por_facultades;
 /*													SP													 */
 /* ----------------------------------------------------------------------------------------------------- */
 --PROCEDIMIENTO ALMACENADO PARA BUSCAR POR ID DE ESTUDIANTE LAS MATERIAS QUE TIENE ESCRITAS 
-CREATE PROCEDURE BuscarMateriasPorEstudiante
+CREATE PROCEDURE buscar_materias_por_estudiante
     @idEstudiante INT
 AS
 BEGIN
@@ -495,7 +495,7 @@ END;
 
 --SE EJECUTA DE LA SIGUIENTE MANERA 
 
-EXEC BuscarMateriasPorEstudiante @idEstudiante = 11; -- Reemplaza 123 con el ID del estudiante deseado
+EXEC buscar_materias_por_estudiante @idEstudiante = 11; -- Reemplaza 123 con el ID del estudiante deseado
 
 -- Crea usuario para una persona en el sistema
 CREATE PROCEDURE crear_usuario
@@ -626,11 +626,11 @@ CREATE USER admin FOR LOGIN admin_login WITH DEFAULT_SCHEMA = dba_schema;
 /* ----------------------------------------------------------------------------------------------------- */
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON SCHEMA :: dba_schema TO dba WITH GRANT OPTION;
-GRANT CREATE TABLE, CREATE VIEW ON DATABASE :: sistema_escolar TO dba WITH GRANT OPTION;
+GRANT CREATE TABLE, CREATE VIEW ON DATABASE :: sistema_universitario TO dba WITH GRANT OPTION;
 
 GRANT SELECT, INSERT, UPDATE, DELETE ON SCHEMA :: dba_schema TO designer;
-GRANT CREATE VIEW, CREATE TABLE ON DATABASE :: sistema_escolar TO designer;
-GRANT ALTER ON DATABASE :: sistema_escolar TO designer;
+GRANT CREATE VIEW, CREATE TABLE ON DATABASE :: sistema_universitario TO designer;
+GRANT ALTER ON DATABASE :: sistema_universitario TO designer;
 
 GRANT SELECT ON SCHEMA :: dba_schema TO admin;
 
